@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+  <title>Hello, World!</title>
+</head>
+<body>
+  <div class="hover-element">
+Hover me!
+</div>
+
+<style>
+.hover-element:hover {
+background-color: #f2f2f2;
+color: #333;
+}
+
+.hover-element:active:hover {
+background-color: transparent;
+color: inherit;
+}
+
+.hover-element:active::after {
+content: "";
+display: inline-block;
+width: 0;
+transition: width 0s linear 0.3s;
+}
+
+.hover-element:active:hover::after {
+width: 100%;
+transition: width 0s linear 0s;
+}
+</style>
+</body>
+</html>

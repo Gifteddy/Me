@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Body Measurement</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #video {
+            width: 80%;
+            max-width: 640px;
+            height: auto;
+            margin-top: 20px;
+            border: 2px solid #ccc;
+        }
+        #measurements {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        #preview {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real-time Body Measurement</h1>
+    <video id="video" autoplay></video>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <div id="measurements"></div>
+    <div id="preview"></div>
+    <script src="(link unavailable)"></script>
+    <script src="(link unavailable)"></script>
+    <script>
+        async function setupCamera() {
+            const video = document.getElementById('video');
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                return new Promise(resolve => {
+                    video.onloadedmetadata = () => {
+                        resolve(video);
+                    };
+                });
+            }
+        }
+        async function detectBody() {
+            const video = await setupCamera();
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const net = await posenet.load();
+            async function poseDetectionFrame() {
+                const pose = await net.estimateSinglePose(video, { flipHorizontal: false });
+                drawKeypoints(pose.keypoints, ctx);
+                calculateMeasurements(pose.keypoints);
+                requestAnimationFrame(poseDetectionFrame);
+            }
+            poseDetectionFrame();
+        }
+        function drawKeypoints(keypoints, ctx, color = 'aqua', radius = 3) {
+            keypoints.forEach(keypoint => {
+                ctx.beginPath();
+                ctx.arc(keypoint.position.x, keypoint.position.y, radius, 0, 2 * Math.PI);
+                ctx.fillStyle = color;
+                ctx.fill();
+            });
+        }
+        function calculateMeasurements(keypoints) {
+            // Calculate measurements based on keypoints
+            // Example: Calculate distance between two keypoints
+            const nose = keypoints.find(kp => kp.part === 'nose');
+            const leftEye = keypoints.find(kp => kp.part === 'leftEye');
+            const distance = Math.sqrt(Math.pow(leftEye.position.x - nose.position.x, 2) + Math.pow(leftEye.position.y - nose.position.y, 2));
+            // Display the distance or other measurements on the webpage
+            const measurementsDiv = document.getElementById('measurements');
+            measurementsDiv.innerHTML = `Distance between nose and left eye: ${distance.toFixed(2)} pixels`;
+            // Update the preview element
+            const previewDiv = document.getElementById('preview');
+            previewDiv.innerHTML = `Preview: ${distance.toFixed(2)} pixels`;
+        }
+        detectBody();
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                // Camera access granted! Use the stream here
+                const video = document.getElementById("video");
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch(error => {
+                // Handle camera access error
+                console.error("Error accessing camera:", error);
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram-like Gallery</title>
+    <style>
+        /* Basic styling for the gallery */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fafafa;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1px;
+            padding: 1px;
+            background-color: #fff;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .gallery-item img,
+        .gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Lightbox styling */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .lightbox-content img,
+        .lightbox-content video {
+            width: 100%;
+            height: auto;
+            display: none;
+        }
+
+        .lightbox .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 30px;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="gallery">
+        <div class="gallery-item">
+            <img src="SKY2.0.jpg" alt="Image 1">
+        </div>
+        <div class="gallery-item">
+            <img src="SKY2.0.jpg" alt="Image 2">
+        </div>
+        <div class="gallery-item">
+            <video src="video1.mp4" controls></video>
+        </div>
+        <div class="gallery-item">
+            <video src="video1.mp4" controls></video>
+        </div>
+        <!-- Add more items as needed -->
+    </div>
+
+    <div class="lightbox" id="lightbox">
+        <span class="close">&times;</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="">
+            <video id="lightbox-video" controls></video>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const galleryItems = document.querySelectorAll('.gallery-item img, .gallery-item video');
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxVideo = document.getElementById('lightbox-video');
+            const closeBtn = document.querySelector('.lightbox .close');
+
+            galleryItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    if (item.tagName === 'IMG') {
+                        lightboxImg.src = item.src;
+                        lightboxImg.style.display = 'block';
+                        lightboxVideo.style.display = 'none';
+                    } else if (item.tagName === 'VIDEO') {
+                        lightboxVideo.src = item.src;
+                        lightboxVideo.style.display = 'block';
+                        lightboxImg.style.display = 'none';
+                    }
+                    lightbox.style.display = 'flex';
+                });
+            });
+
+            closeBtn.addEventListener('click', function() {
+                lightbox.style.display = 'none';
+                lightboxImg.src = '';
+                lightboxVideo.src = '';
+            });
+
+            lightbox.addEventListener('click', function(event) {
+                if (event.target === lightbox) {
+                    lightbox.style.display = 'none';
+                    lightboxImg.src = '';
+                    lightboxVideo.src = '';
+                }
+            });
+        });
+    </script>
+
+<style>
+		.reveal {
+			color: #007bff;
+			text-decoration: underline;
+			cursor: pointer;
+		}
+		.hidden {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<h1>Reveal Text</h1>
+	<script>
+		function revealText(text) {
+			const shortenedText = text.substring(0, 2) + ' ...';
+			const revealSpan = document.createElement('span');
+			revealSpan.innerHTML = shortenedText;
+			const revealLink = document.createElement('span');
+			revealLink.className = 'reveal';
+			revealLink.innerHTML = '[Click to reveal]';
+			revealSpan.appendChild(revealLink);
+			const hiddenText = document.createElement('span');
+			hiddenText.className = 'hidden';
+			hiddenText.innerHTML = text;
+			revealSpan.appendChild(hiddenText);
+			document.body.appendChild(revealSpan);
+			revealLink.addEventListener('click', () => {
+				hiddenText.classList.toggle('hidden');
+			});
+		}
+		revealText('Happy to see you tomorrow');
+		revealText('This is a secret message!');
+		revealText('Click to reveal a surprise!');
+	</script>
+
+
+	<h1>Upload and Change Pictures</h1>
+	<input type="file" id="fileInput">
+	<img src="" id="uploadedImage">
+
+<style>
+#uploadedImage {
+	width: 300px;
+	height: 200px;
+	border: 1px solid #ccc;
+}
+</style>
+
+<script>
+const fileInput = document.getElementById('fileInput');
+const uploadedImage = document.getElementById('uploadedImage');
+
+fileInput.addEventListener('change', (e) => {
+	const file = fileInput.files[0];
+	const reader = new FileReader();
+	reader.readAsDataURL(file);
+	reader.onload = () => {
+		const imageData = reader.result;
+		uploadedImage.src = imageData;
+	};
+});
+</script>
+</body>
+</html>
